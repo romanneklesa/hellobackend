@@ -37,8 +37,11 @@ public class ContactServiceImpl implements ContactService {
        Pattern pattern = Pattern.compile(nameFilter);
         List<Contact> list = contactDao.findAll();
 
-        List<Contact> res = list.parallelStream().
-                filter(o-> pattern.matcher(o.getName()).find()).
+        List<Contact> res =
+               /* list.parallelStream().filter(o->
+                        o.getName().matches("[A-Za-z]{1,}")).collect(Collectors.toList());*/
+                list.parallelStream().
+                filter(o-> !pattern.matcher(o.getName()).find()).
                 collect(Collectors.toList());
 
         return res;
