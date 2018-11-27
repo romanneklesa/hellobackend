@@ -8,3 +8,5 @@ install: mvn test
 cache:
   directories:
   - $HOME/.m2
+  script:
+  mvn verify -B
