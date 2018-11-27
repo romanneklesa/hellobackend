@@ -10,3 +10,5 @@ cache:
   - $HOME/.m2
   script:
   mvn verify -B
+script:
+- ./mvnw clean install -B
