@@ -5,13 +5,16 @@ import com.hello.backend.entity.Contact;
 import com.hello.backend.service.ContactService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class ContactServiceImpl implements ContactService {
@@ -31,20 +34,13 @@ public class ContactServiceImpl implements ContactService {
 
     public List<Contact> listContacts(String nameFilter) {
 
-        List<Contact> contacts = contactDao.findAll();
-        final Pattern pattern = Pattern.compile(nameFilter);
+       Pattern pattern = Pattern.compile(nameFilter);
+        List<Contact> list = contactDao.findAll();
 
-        for (Iterator<Contact> it = contacts.iterator();
-             it.hasNext(); ) {
+        List<Contact> res = list.parallelStream().
+                filter(o-> pattern.matcher(o.getName()).find()).
+                collect(Collectors.toList());
 
-            final Contact contact = it.next();
-            final Matcher matcher = pattern.matcher(contact.getName());
-            if (matcher.matches()) {
-                it.remove();
-
-            }
-        }
-
-        return contacts;
+        return res;
     }
 }
