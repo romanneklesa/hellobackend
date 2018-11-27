@@ -18,12 +18,11 @@ public class ContactController {
     @Autowired
     private ContactService contactService;
 
-    @RequestMapping(value = "/contacts/create")
+    @RequestMapping(value = "/contacts/save")
     public ResponseEntity contactsCreate() {
 
         return contactService.save();
     }
-
 
     @RequestMapping(value = "/contacts")
     public ResponseEntity<List<Contact>> contacts
@@ -32,7 +31,6 @@ public class ContactController {
         List<Contact> contacts = contactService.listContacts(nameFilter);
 
         return new ResponseEntity<>(contacts, HttpStatus.OK);
-
 
     }
 }

@@ -31,19 +31,20 @@ public class ContactServiceImpl implements ContactService {
 
     public List<Contact> listContacts(String nameFilter) {
 
-        List<Contact> contacts;
-        contacts = contactDao.findAll();
-
+        List<Contact> contacts = contactDao.findAll();
         final Pattern pattern = Pattern.compile(nameFilter);
-        for (Iterator<Contact> it = contacts.iterator(); it.hasNext(); ) {
+
+        for (Iterator<Contact> it = contacts.iterator();
+             it.hasNext(); ) {
 
             final Contact contact = it.next();
             final Matcher matcher = pattern.matcher(contact.getName());
             if (matcher.matches()) {
                 it.remove();
+
             }
         }
+
         return contacts;
     }
 }
-
