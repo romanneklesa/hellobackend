@@ -2,5 +2,6 @@ language: java
 services:
   - mysql
 sudo: false
- script: "mvn verify"
-./mvnw test -B.
+script:
+ ./mvnw clean install -B
+
