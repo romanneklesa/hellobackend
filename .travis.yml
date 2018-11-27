@@ -3,5 +3,5 @@ services:
   - mysql
 sudo: false
 script:
- ./mvnw clean install -B
+ ./mvnw test -B
 
