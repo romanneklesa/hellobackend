@@ -3,4 +3,4 @@ services:
   - mysql
 sudo: false
  script: "mvn verify"
-mvn test -B
+./mvnw test -B.
