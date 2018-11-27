@@ -2,7 +2,7 @@
 
 
 
-  ### Installation
+  ### Instal
 
  - Install and run mysql server
  - Create "contact" database: CREATE DATABASE contact;
