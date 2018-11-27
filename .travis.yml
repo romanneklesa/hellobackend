@@ -4,11 +4,4 @@ before_install:
 services:
   - mysql
 sudo: false
-install: mvn test
-cache:
-  directories:
-  - $HOME/.m2
-  script:
-  mvn verify -B
-script:
-- ./mvnw clean install -B
+ script: "mvn verify"
