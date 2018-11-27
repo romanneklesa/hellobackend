@@ -3,5 +3,5 @@ services:
   - mysql
 sudo: false
 script:
- ./mvnw test -B
+ mvn test
 
