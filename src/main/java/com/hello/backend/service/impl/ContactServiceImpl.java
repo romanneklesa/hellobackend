@@ -7,6 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,18 +34,24 @@ public class ContactServiceImpl implements ContactService {
         return ResponseEntity.ok().build();
     }
 
+
     public List<Contact> listContacts(String nameFilter) {
 
-       Pattern pattern = Pattern.compile(nameFilter);
-        List<Contact> list = contactDao.findAll();
+        try {
+            final Pattern pattern = Pattern.compile(nameFilter);
 
-        List<Contact> res =
-               /* list.parallelStream().filter(o->
-                        o.getName().matches("[A-Za-z]{1,}")).collect(Collectors.toList());*/
-                list.parallelStream().
-                filter(o-> !pattern.matcher(o.getName()).find()).
-                collect(Collectors.toList());
+            List<Contact> list = null;
+            if (list == null) {
+                list = contactDao.findAll();
+            }
 
-        return res;
+            List<Contact> res =
+                    list.parallelStream().
+                            filter(o -> !pattern.matcher(o.getName()).matches()).
+                            collect(Collectors.toList());
+            return res;
+        } catch (PatternSyntaxException e) {
+            throw e;
+        }
     }
 }
