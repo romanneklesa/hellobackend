@@ -1,9 +1,9 @@
 package com.hello.backend.dao;
 
 import com.hello.backend.entity.Contact;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface ContactDao extends JpaRepository<Contact, Long> {
+public interface ContactDao extends PagingAndSortingRepository<Contact, Long> {
 
 
 }

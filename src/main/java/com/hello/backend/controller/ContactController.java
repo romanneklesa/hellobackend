@@ -2,16 +2,13 @@ package com.hello.backend.controller;
 
 import com.hello.backend.entity.Contact;
 import com.hello.backend.service.ContactService;
-import org.json.JSONException;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -30,26 +27,16 @@ public class ContactController {
         return contactService.save();
     }
 
-    /*@RequestMapping(value = "/contacts", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<List<Contact>> contacts
-            (@RequestParam(value = "nameFilter", required = false) String nameFilter) {
-
-
-        List<Contact> contacts = contactService.listContacts(nameFilter);
-
-        return new ResponseEntity<>(contacts, HttpStatus.OK);
-
-    }*/
-
     @RequestMapping(value = "/contacts", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<String> contacts(@RequestParam(value = "nameFilter", required = false)
-                                                   String nameFilter) throws JSONException {
+    @ResponseBody
+    public ResponseEntity<Page<Contact>> contacts(
 
-
+            @RequestParam(value = "nameFilter", required = false) String nameFilter,
+            @RequestParam(value = "page") final Integer pageNumber,
+            @RequestParam(value = "size") final Integer pageSize,
+            Pageable pageable)  {
 
         List<Contact> contacts = null;
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
 
         try {
             Pattern.compile(nameFilter);
@@ -58,20 +45,10 @@ public class ContactController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        contacts = contactService.listContacts(nameFilter);
+        pageable = new PageRequest(pageNumber, pageSize);
 
-        for (Contact c : contacts) {
-            jsonArray.add(c.toJSON());
-        }
+        Page<Contact> dataList = contactService.listContacts(nameFilter, pageable);
 
-        jsonObject.put("contacts", jsonArray);
-
-        return new ResponseEntity<>(jsonObject.toJSONString(), HttpStatus.OK);
-
+        return new ResponseEntity<>(dataList, HttpStatus.OK);
     }
-
-
 }
-
-
-

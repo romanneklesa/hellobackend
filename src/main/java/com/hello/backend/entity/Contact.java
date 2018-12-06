@@ -1,15 +1,6 @@
 package com.hello.backend.entity;
 
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import org.json.JSONException;
-import org.json.simple.JSONObject;
-import org.springframework.context.annotation.Lazy;
-
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "contacts")
@@ -46,12 +37,6 @@ public class Contact {
         this.name = name;
     }
 
-    public JSONObject toJSON() throws JSONException {
-        JSONObject result = new JSONObject();
-        result.put("id", id);
-        result.put("name", name);
-        return result;
-    }
 }
 
 
