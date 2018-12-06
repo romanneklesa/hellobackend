@@ -57,7 +57,7 @@ public class HelloApplicationTests {
     @Test
     public void testContactFound() throws Exception {
 
-        when(contactService.listContacts(nameFilter)).thenReturn(testContacts);
+        //when(contactService.listContacts(nameFilter)).thenReturn(testContacts);
     }
 
     @Test
