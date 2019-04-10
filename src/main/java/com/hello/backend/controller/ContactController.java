@@ -28,27 +28,15 @@ public class ContactController {
     }
 
     @RequestMapping(value = "/contacts", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
     public ResponseEntity<Page<Contact>> contacts(
 
-            @RequestParam(value = "nameFilter", required = false) String nameFilter,
-            @RequestParam(value = "page") final Integer pageNumber,
-            @RequestParam(value = "size") final Integer pageSize,
-            Pageable pageable)  {
+            @RequestParam(value = "nameFilter") String nameFilter,
+            @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "size", defaultValue = "100000") Integer pageSize) {
 
-        List<Contact> contacts = null;
+        Pageable pageable = new PageRequest(pageNumber, pageSize);
 
-        try {
-            Pattern.compile(nameFilter);
-        } catch (
-                PatternSyntaxException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return contactService.listContacts(nameFilter, pageable);
 
-        pageable = new PageRequest(pageNumber, pageSize);
-
-        Page<Contact> dataList = contactService.listContacts(nameFilter, pageable);
-
-        return new ResponseEntity<>(dataList, HttpStatus.OK);
     }
 }

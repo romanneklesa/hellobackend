@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,21 +33,22 @@ public class ContactServiceImpl implements ContactService {
         return ResponseEntity.ok().build();
     }
 
-    public Page<Contact> listContacts(String nameFilter, Pageable pageable) {
+    public ResponseEntity<Page<Contact>> listContacts(String nameFilter, Pageable pageable) {
 
-        final Pattern pattern = Pattern.compile(nameFilter);
+        try {
+            final Pattern pattern = Pattern.compile(nameFilter);
+            Page<Contact> list = contactDao.findAll(pageable);
+            List<Contact> res = list.getContent();
+            res = list.getContent().parallelStream().
+                    filter(o -> !pattern.matcher(o.getName()).matches()).
+                    collect(Collectors.toList());
 
-        Page<Contact> list = contactDao.findAll(pageable);
+            Page<Contact> pages = new PageImpl<>(res);
 
-        List<Contact> res = list.getContent();
-        res = list.getContent().parallelStream().
-                filter(o -> !pattern.matcher(o.getName()).matches()).
-                collect(Collectors.toList());
-
-        Page<Contact> pages = new PageImpl<>(res);
-
-        return pages;
-
+            return new ResponseEntity<>(pages, HttpStatus.OK);
+        } catch (
+                PatternSyntaxException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
-
 }
